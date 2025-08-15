@@ -22,22 +22,10 @@ namespace Our.Umbraco.ValidationAttributes
         public void AddValidation(ClientModelValidationContext context)
         {
             ErrorMessageString = ValidationAttributesService.DictionaryValue(DictionaryKey);
-
-            if (context.ModelMetadata.ContainerType != null)
-            {
-                if (OtherPropertyDisplayName == null)
-                {
-                    var otherPropertyMetadata = context.MetadataProvider.GetMetadataForProperty(context.ModelMetadata.ContainerType, OtherProperty);
-
-                    // TODO: Check if there's a better way to get the formatted display name to input into the 'data-val-equalto-other' attribute
-                    // The original CompareAttribute sets the 'data-val-equalto-other' attribute with a prepending '*.', but I noticed that it works without it too
-                    OtherPropertyDisplayName = $"*.{otherPropertyMetadata.GetDisplayName()}";
-                }
-            }
             
             AttributeHelper.MergeAttribute(context.Attributes, "data-val", "true");
             AttributeHelper.MergeAttribute(context.Attributes, "data-val-equalto", ErrorMessageString);
-            AttributeHelper.MergeAttribute(context.Attributes, "data-val-equalto-other", OtherPropertyDisplayName);
+            AttributeHelper.MergeAttribute(context.Attributes, "data-val-equalto-other", $"*.{OtherProperty}");
         }
     }
 }
